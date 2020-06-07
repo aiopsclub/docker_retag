@@ -1,6 +1,6 @@
-__title__ = "docker-retag"
-__description__ = "docker-retag"
-__url__ = "https://github.com/aiopsclub/docker-retag"
+__title__ = "docker_retag"
+__description__ = "docker_retag"
+__url__ = "https://github.com/aiopsclub/docker_retag"
 __version__ = "0.0.1"
 __build__ = 0x022300
 __author__ = "aiopsclub"
