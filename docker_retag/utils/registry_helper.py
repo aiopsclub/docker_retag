@@ -1,10 +1,17 @@
 #!/usr/bin/env python
 
+import json
+import sys
+
 import requests
 
 from .auth_helper import get_service_realm, scope_generate
 from .log_helper import logger
-import json
+
+if sys.version_info.major == 2:
+    from urlparse import urlparse
+else:
+    from urllib.parse import urlparse
 
 
 class Registry(object):
@@ -20,10 +27,16 @@ class Registry(object):
         self.username = username
         self.password = password
         self.image = image
-        self.registry_url = registry_url
+        self.registry_url = self.handle_registry_url(registry_url)
         self.old_image_tag = old_image_tag
         self.new_image_tag = new_image_tag
         self.token = self.get_auth_token()
+
+    def handle_registry_url(self, registry_url):
+        url_info = urlparse(registry_url)
+        if url_info.scheme != "https":
+            return "https://" + (url_info.netloc or url_info.path)
+        return url_info.scheme + "://" + (url_info.netloc or url_info.path)
 
     def get_auth_token(self):
         auth = requests.auth.HTTPBasicAuth(self.username, self.password)
