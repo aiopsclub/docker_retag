@@ -58,6 +58,9 @@ class Registry(object):
     def _manifests_uri(self, image_tag):
         return "/v2/{}/manifests/{}".format(self.image, image_tag)
 
+    def _blob_uri(self, digest):
+        return "/v2/{}/blobs/{}".format(self.image, digest)
+
     def get_image_manifests(self):
         tag_api_uri = self._manifests_uri(self.old_image_tag)
         custom_headers = {
@@ -72,6 +75,23 @@ class Registry(object):
             self.registry_url + tag_api_uri, headers=custom_headers,
         )
         return manifest_res.json()
+
+    def get_image_config(self):
+        old_image_manifests = self.get_image_manifests()
+        if old_image_manifests:
+            config_digest = old_image_manifests["config"]["digest"]
+            blob_api_uri = self._blob_uri(config_digest)
+            custom_headers = {}
+            if self.required_auth:
+                token = self.get_auth_token()
+                custom_headers["Authorization"] = "Bearer {}".format(token)
+            get_image_config_res = requests.get(
+                self.registry_url + blob_api_uri, headers=custom_headers
+            )
+            get_image_config_res.raise_for_status()
+            # ["config"]["Labels"]
+            return get_image_config_res.json()
+        return {}
 
     def add_new_tag_by_registry(self):
         tag_api_uri = self._manifests_uri(self.new_image_tag)
