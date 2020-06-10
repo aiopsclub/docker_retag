@@ -5,7 +5,7 @@ import sys
 
 import requests
 
-from .auth_helper import get_service_realm, scope_generate
+from .auth_helper import get_service_realm, required_auth, scope_generate
 from .log_helper import logger
 
 if sys.version_info.major == 2:
@@ -30,7 +30,7 @@ class Registry(object):
         self.registry_url = self.handle_registry_url(registry_url)
         self.old_image_tag = old_image_tag
         self.new_image_tag = new_image_tag
-        self.token = self.get_auth_token()
+        self.required_auth = required_auth(self.registry_url)
 
     def handle_registry_url(self, registry_url):
         url_info = urlparse(registry_url)
@@ -63,8 +63,11 @@ class Registry(object):
         custom_headers = {
             "Content-Type": "application/json",
             "accept": "application/vnd.docker.distribution.manifest.v2+json",
-            "Authorization": "Bearer {}".format(self.token),
         }
+        if self.required_auth:
+            token = self.get_auth_token()
+            custom_headers["Authorization"] = "Bearer {}".format(token)
+
         manifest_res = requests.get(
             self.registry_url + tag_api_uri, headers=custom_headers,
         )
@@ -77,8 +80,10 @@ class Registry(object):
             logger.info(old_image_manifests)
             custom_headers = {
                 "Content-Type": "application/vnd.docker.distribution.manifest.v2+json",
-                "Authorization": "Bearer {}".format(self.token),
             }
+            if self.required_auth:
+                token = self.get_auth_token()
+                custom_headers["Authorization"] = "Bearer {}".format(token)
             add_new_tag_res = requests.put(
                 self.registry_url + tag_api_uri,
                 headers=custom_headers,
