@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # Learn more: https://github.com/kennethreitz/setup.py
 import os
-import re
-import sys
-
 from codecs import open
 
 from setuptools import setup
@@ -55,5 +52,5 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
     ],
-    project_urls={"Source": "https://github.com/aiopsclub/docker_retag",},
+    project_urls={"Source": "https://github.com/aiopsclub/docker_retag"},
 )
