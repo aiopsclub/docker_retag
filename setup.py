@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Learn more: https://github.com/kennethreitz/setup.py
+import codecs
 import os
-from codecs import open
 
 from setuptools import setup
 
@@ -13,10 +13,12 @@ requires = ["requests==2.23.0"]
 test_requirements = []
 
 about = {}
-with open(os.path.join(here, "docker_retag", "__version__.py"), "r", "utf-8") as f:
+with codecs.open(
+    os.path.join(here, "docker_retag", "__version__.py"), "r", "utf-8"
+) as f:
     exec(f.read(), about)
 
-with open("README.md", "r", "utf-8") as f:
+with codecs.open("README.md", "r", "utf-8") as f:
     readme = f.read()
 
 setup(
