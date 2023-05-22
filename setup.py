@@ -9,7 +9,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 packages = ["docker_retag"]
 
-requires = ["requests==2.23.0"]
+requires = ["requests==2.31.0"]
 test_requirements = []
 
 about = {}
